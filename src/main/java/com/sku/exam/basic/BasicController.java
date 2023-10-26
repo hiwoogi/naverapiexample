@@ -32,12 +32,8 @@ public class BasicController {
 
     @RequestMapping("/naverapi")
     @ResponseBody
-    public String moviedetail(Model model) {
+    public String moviedetail() {
 
-
-        //네이버 트렌드 데이터
-
-        String apiUrl = dataApiURL;
 
 
         Map<String, String> requestHeaders = new HashMap<>();
@@ -45,26 +41,20 @@ public class BasicController {
         requestHeaders.put("X-Naver-Client-Secret", dataclientSecret);
         requestHeaders.put("Content-Type", "application/json");
 
-        LocalDate now = LocalDate.now(); //현재 날짜
-        LocalDate lastmonth = now.minusMonths(1); //현재 날짜 기준 한달 전
-        LocalDate lastseven = now.minusWeeks(1); //현재 날짜 기준 일주일 전
 
-
-
-        String requestBody = "{\"startDate\":\"2017-01-01\"," +
-                "\"endDate\":\"2017-04-30\"," +
+        String requestBody = "{\"startDate\":\"2017-08-01\"," +
+                "\"endDate\":\"2017-09-30\"," +
                 "\"timeUnit\":\"month\"," +
-                "\"keywordGroups\":[{\"groupName\":\"한글\"," + "\"keywords\":[\"한글\",\"korean\"]}," +
-                "{\"groupName\":\"영어\"," + "\"keywords\":[\"영어\",\"english\"]}]," +
+                "\"category\":[{\"name\":\"패션의류\",\"param\":[\"50000000\"]}," +
+                "{\"name\":\"화장품/미용\",\"param\":[\"50000002\"]}]," +
                 "\"device\":\"pc\"," +
-                "\"ages\":[\"1\",\"2\"]," +
+                "\"ages\":[\"20\",\"30\"]," +
                 "\"gender\":\"f\"}";
 
+        String responseBody = post(dataApiURL, requestHeaders, requestBody);
 
-        String responseBody2 = post(apiUrl, requestHeaders, requestBody);
 
-
-        return responseBody2;
+        return responseBody;
 
 
     }
@@ -96,31 +86,11 @@ public class BasicController {
             con.disconnect(); // Connection을 재활용할 필요가 없는 프로세스일 경우
         }
     }
-    private static String get(String apiUrl, Map<String, String> requestHeaders){
-        HttpURLConnection con = connect(apiUrl);
-        try {
-            con.setRequestMethod("GET");
-            for(Map.Entry<String, String> header :requestHeaders.entrySet()) {
-                con.setRequestProperty(header.getKey(), header.getValue());
-            }
-            int responseCode = con.getResponseCode();
-            if (responseCode == HttpURLConnection.HTTP_OK) { // 정상 호출
-                return readBody(con.getInputStream());
-            } else { // 에러 발생
-                return readBody(con.getErrorStream());
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("API 요청과 응답 실패", e);
-        } finally {
-            con.disconnect();
-        }
-    }
 
-
-    private static HttpURLConnection connect(String apiUrl){
+    private static HttpURLConnection connect(String apiUrl) {
         try {
             URL url = new URL(apiUrl);
-            return (HttpURLConnection)url.openConnection();
+            return (HttpURLConnection) url.openConnection();
         } catch (MalformedURLException e) {
             throw new RuntimeException("API URL이 잘못되었습니다. : " + apiUrl, e);
         } catch (IOException e) {
@@ -128,9 +98,8 @@ public class BasicController {
         }
     }
 
-
-    private static String readBody(InputStream body){
-        InputStreamReader streamReader = new InputStreamReader(body);
+    private static String readBody(InputStream body) {
+        InputStreamReader streamReader = new InputStreamReader(body, StandardCharsets.UTF_8);
 
         try (BufferedReader lineReader = new BufferedReader(streamReader)) {
             StringBuilder responseBody = new StringBuilder();
@@ -139,19 +108,12 @@ public class BasicController {
             while ((line = lineReader.readLine()) != null) {
                 responseBody.append(line);
             }
+
             return responseBody.toString();
         } catch (IOException e) {
             throw new RuntimeException("API 응답을 읽는데 실패했습니다.", e);
         }
     }
-
-
-
-//    @GetMapping("text-basic")
-//    public String textBasic(Model model){
-//        model.addAttribute("data", "Hello Spring");
-//        return "basic/text-basic";
-//
-//    }
-
 }
+
+
