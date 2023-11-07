@@ -1,27 +1,28 @@
-package com.sku.exam.basic;
+package com.sku.exam.basic.controller;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
+import com.google.gson.Gson;
+import com.sku.exam.basic.dto.FilterDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/test")
+@CrossOrigin(origins = "http://localhost:3000")
 public class BasicController {
+
+    private static final Logger logger = LoggerFactory.getLogger(BasicController.class);
 
     @Value("${data.client.id}")
     private String dataclientId;
@@ -43,12 +44,12 @@ public class BasicController {
 
 
         String requestBody = "{\"startDate\":\"2017-08-01\"," +
-                "\"endDate\":\"2018-09-30\"," +
+                "\"endDate\":\"2017-09-30\"," +
                 "\"timeUnit\":\"month\"," +
                 "\"category\":\"50000000\"," +
-                "\"keyword\": [{\"name\":\"패션의류\",\"param\":[\"정장\"]}]," +
+                "\"keyword\": \"정장\"," +
                 "\"device\":\"\"," +
-                "\"ages\":[]," +
+                "\"ages\":[\"10\", \"20\"]," +
                 "\"gender\":\"\"}";
 
         String responseBody = post(dataApiURL, requestHeaders, requestBody);
@@ -112,6 +113,25 @@ public class BasicController {
         } catch (IOException e) {
             throw new RuntimeException("API 응답을 읽는데 실패했습니다.", e);
         }
+    }
+
+    @PostMapping("/requestbody")
+    public ResponseEntity<String> testRequestBody(@RequestBody FilterDto dto) {
+        Map<String, String> requestHeaders = new HashMap<>();
+        requestHeaders.put("X-Naver-Client-Id", dataclientId);
+        requestHeaders.put("X-Naver-Client-Secret", dataclientSecret);
+        requestHeaders.put("Content-Type", "application/json");
+
+        //요청 json 데이터를
+        Gson gson = new Gson();
+        String requestBody = gson.toJson(dto);
+
+        String responseBody = post(dataApiURL, requestHeaders, requestBody);
+        logger.info("response : {}", responseBody);
+        logger.info("Received KeywordDto: {}", dto);
+        return ResponseEntity.ok(responseBody);
+
+
     }
 }
 
