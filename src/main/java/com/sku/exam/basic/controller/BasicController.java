@@ -28,36 +28,13 @@ public class BasicController {
     private String dataclientId;
     @Value("${data.client.secret}")
     private String dataclientSecret;
-    @Value("${data.apiURL}")
-    private String dataApiURL;
+    @Value("${data.genderApiURL}")
+    private String genderApiURL;
+    @Value("${data.deviceApiURL}")
+    private String deviceApiURL;
+    @Value("${data.ageApiURL}")
+    private String ageApiURL;
 
-    @RequestMapping("/naverapi")
-    @ResponseBody
-    public String moviedetail() {
-
-
-
-        Map<String, String> requestHeaders = new HashMap<>();
-        requestHeaders.put("X-Naver-Client-Id", dataclientId);
-        requestHeaders.put("X-Naver-Client-Secret", dataclientSecret);
-        requestHeaders.put("Content-Type", "application/json");
-
-
-        String requestBody = "{\"startDate\":\"2017-08-01\"," +
-                "\"endDate\":\"2017-09-30\"," +
-                "\"timeUnit\":\"month\"," +
-                "\"category\":\"50000000\"," +
-                "\"keyword\": \"정장\"," +
-                "\"device\":\"\"," +
-                "\"ages\":[\"10\", \"20\"]," +
-                "\"gender\":\"\"}";
-
-        String responseBody = post(dataApiURL, requestHeaders, requestBody);
-
-
-        return responseBody;
-
-    }
 
     private static String post(String apiUrl, Map<String, String> requestHeaders, String requestBody) {
         HttpURLConnection con = connect(apiUrl);
@@ -115,7 +92,7 @@ public class BasicController {
         }
     }
 
-    @PostMapping("/requestbody")
+    @PostMapping("/gender")
     public ResponseEntity<String> testRequestBody(@RequestBody FilterDto dto) {
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("X-Naver-Client-Id", dataclientId);
@@ -126,13 +103,55 @@ public class BasicController {
         Gson gson = new Gson();
         String requestBody = gson.toJson(dto);
 
-        String responseBody = post(dataApiURL, requestHeaders, requestBody);
+        String responseBody = post(genderApiURL, requestHeaders, requestBody);
         logger.info("response : {}", responseBody);
         logger.info("Received KeywordDto: {}", dto);
         return ResponseEntity.ok(responseBody);
 
 
     }
+
+    @PostMapping("/device")
+    public ResponseEntity<String> deviceRequestBody(@RequestBody FilterDto dto) {
+        Map<String, String> requestHeaders = new HashMap<>();
+        requestHeaders.put("X-Naver-Client-Id", dataclientId);
+        requestHeaders.put("X-Naver-Client-Secret", dataclientSecret);
+        requestHeaders.put("Content-Type", "application/json");
+
+        //요청 json 데이터를
+        Gson gson = new Gson();
+        String requestBody = gson.toJson(dto);
+
+        String responseBody = post(deviceApiURL, requestHeaders, requestBody);
+        logger.info("response : {}", responseBody);
+        logger.info("Received KeywordDto: {}", dto);
+        return ResponseEntity.ok(responseBody);
+
+
+    }
+
+    @PostMapping("/age")
+    public ResponseEntity<String> ageRequestBody(@RequestBody FilterDto dto) {
+        Map<String, String> requestHeaders = new HashMap<>();
+        requestHeaders.put("X-Naver-Client-Id", dataclientId);
+        requestHeaders.put("X-Naver-Client-Secret", dataclientSecret);
+        requestHeaders.put("Content-Type", "application/json");
+
+        //요청 json 데이터를
+        Gson gson = new Gson();
+        String requestBody = gson.toJson(dto);
+
+        String responseBody = post(ageApiURL, requestHeaders, requestBody);
+        logger.info("response : {}", responseBody);
+        logger.info("Received KeywordDto: {}", dto);
+        return ResponseEntity.ok(responseBody);
+
+
+    }
+
+
 }
+
+
 
 
