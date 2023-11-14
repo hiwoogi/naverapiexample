@@ -1,6 +1,7 @@
 package com.sku.exam.basic.controller;
 
 import com.google.gson.Gson;
+import com.sku.exam.basic.dto.ClickFilterDto;
 import com.sku.exam.basic.dto.FilterDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,9 @@ public class BasicController {
     private String deviceApiURL;
     @Value("${data.ageApiURL}")
     private String ageApiURL;
+    @Value("${data.clickApiURL}")
+    private String clickApiURL;
+
 
 
     private static String post(String apiUrl, Map<String, String> requestHeaders, String requestBody) {
@@ -142,6 +146,25 @@ public class BasicController {
         String requestBody = gson.toJson(dto);
 
         String responseBody = post(ageApiURL, requestHeaders, requestBody);
+        logger.info("response : {}", responseBody);
+        logger.info("Received KeywordDto: {}", dto);
+        return ResponseEntity.ok(responseBody);
+
+
+    }
+
+    @PostMapping("/click")
+    public ResponseEntity<String> clickRequestBody(@RequestBody ClickFilterDto dto) {
+        Map<String, String> requestHeaders = new HashMap<>();
+        requestHeaders.put("X-Naver-Client-Id", dataclientId);
+        requestHeaders.put("X-Naver-Client-Secret", dataclientSecret);
+        requestHeaders.put("Content-Type", "application/json");
+
+        //요청 json 데이터를
+        Gson gson = new Gson();
+        String requestBody = gson.toJson(dto);
+
+        String responseBody = post(clickApiURL, requestHeaders, requestBody);
         logger.info("response : {}", responseBody);
         logger.info("Received KeywordDto: {}", dto);
         return ResponseEntity.ok(responseBody);
