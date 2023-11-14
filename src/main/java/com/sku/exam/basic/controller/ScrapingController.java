@@ -3,15 +3,13 @@ package com.sku.exam.basic.controller;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
 @RestController
 @RequestMapping("/test2")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ScrapingController {
 
     @GetMapping("/scrape/{cid}")
