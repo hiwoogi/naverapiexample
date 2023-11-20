@@ -18,9 +18,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-@Controller
+
 @RequestMapping("/test")
-@CrossOrigin(origins = "http://localhost:3000")
+@Controller
 public class BasicController {
 
     private static final Logger logger = LoggerFactory.getLogger(BasicController.class);

@@ -9,7 +9,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/test2")
-@CrossOrigin(origins = "http://localhost:3000")
+
 public class ScrapingController {
 
     @GetMapping("/scrape/{cid}")

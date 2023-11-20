@@ -31,6 +31,9 @@ dependencies {
 	implementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.9'
 	implementation group: 'com.google.code.gson', name: 'gson', version: '2.7'
 	implementation group: 'org.jsoup', name: 'jsoup', version: '1.16.2'
+	implementation 'mysql:mysql-connector-java:8.0.33'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.1.5'
+
 
 
 
