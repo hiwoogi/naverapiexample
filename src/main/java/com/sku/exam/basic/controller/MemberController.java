@@ -2,10 +2,10 @@ package com.sku.exam.basic.controller;
 
 
 import com.sku.exam.basic.dto.MemberFormDto;
+import com.sku.exam.basic.dto.ResponseDto;
 import com.sku.exam.basic.entity.Member;
 import com.sku.exam.basic.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/test3")
 @RestController
 public class MemberController {
+
+
     private final MemberService memberService;
 
     @Autowired
@@ -38,4 +40,29 @@ public class MemberController {
             return ResponseEntity.badRequest().body("Failed to signup the website.");
         }
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> authenticate(@RequestBody MemberFormDto memberFormDto) {
+        Member member = memberService.getByCredentials(
+                memberFormDto.getEmail(),
+                memberFormDto.getPassword());
+
+        if(member != null) {
+            // 토큰 생성
+            final MemberFormDto responseUserDTO = MemberFormDto.builder()
+                    .email(member.getEmail())
+                    .id(member.getId())
+                    .build();
+            return ResponseEntity.ok().body(responseUserDTO);
+        } else {
+            ResponseDto responseDto = ResponseDto.builder()
+                    .error("Login failed.")
+                    .build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(responseDto);
+        }
+    }
+
+
 }

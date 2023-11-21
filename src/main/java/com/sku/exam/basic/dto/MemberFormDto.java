@@ -1,11 +1,14 @@
 package com.sku.exam.basic.dto;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class MemberFormDto {
+
+    private String token;
 
     private String name;
 
@@ -16,6 +19,8 @@ public class MemberFormDto {
     private String confirmPassword;
 
     private String gender;
+
+    private String id;
 
 
 

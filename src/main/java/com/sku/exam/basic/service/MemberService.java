@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @RequiredArgsConstructor
 public class MemberService {
+
+
     private final MemberRepository memberRepository;
 
     public Member saveMember(Member member){
@@ -22,5 +24,9 @@ public class MemberService {
         if(findMember != null){
             throw new IllegalStateException("이미 가입된 회원입니다.");
         }
+    }
+
+    public Member getByCredentials(final String email, final String password) {
+        return memberRepository.findByEmailAndPassword(email, password);
     }
 }
