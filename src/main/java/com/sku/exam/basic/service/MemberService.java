@@ -3,6 +3,7 @@ package com.sku.exam.basic.service;
 import com.sku.exam.basic.entity.Member;
 import com.sku.exam.basic.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +27,16 @@ public class MemberService {
         }
     }
 
-    public Member getByCredentials(final String email, final String password) {
-        return memberRepository.findByEmailAndPassword(email, password);
+    public Member getByCredentials(final String email, final String password, final PasswordEncoder encoder) {
+
+        final Member originalUser = memberRepository.findByEmail(email);
+
+        // matches 메서드를 이용해 패스워드가 같은지 확인
+        if(originalUser != null && encoder.matches(password, originalUser.getPassword())) {
+            return originalUser;
+        }
+        return null;
     }
+
+
 }

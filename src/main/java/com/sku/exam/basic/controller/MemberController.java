@@ -4,9 +4,12 @@ package com.sku.exam.basic.controller;
 import com.sku.exam.basic.dto.MemberFormDto;
 import com.sku.exam.basic.dto.ResponseDto;
 import com.sku.exam.basic.entity.Member;
+import com.sku.exam.basic.security.TokenProvider;
 import com.sku.exam.basic.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -16,10 +19,13 @@ public class MemberController {
 
 
     private final MemberService memberService;
+    private final TokenProvider tokenProvider;
+    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, TokenProvider tokenProvider) {
         this.memberService = memberService;
+        this.tokenProvider = tokenProvider;
     }
 
     @PostMapping("/signup")
@@ -29,7 +35,7 @@ public class MemberController {
             Member member = new Member();
             member.setName(memberFormDto.getName());
             member.setEmail(memberFormDto.getEmail());
-            member.setPassword(memberFormDto.getPassword());
+            member.setPassword(passwordEncoder.encode(memberFormDto.getPassword()));
             member.setGender(memberFormDto.getGender());
 
             // Save the member
@@ -45,19 +51,23 @@ public class MemberController {
     public ResponseEntity<?> authenticate(@RequestBody MemberFormDto memberFormDto) {
         Member member = memberService.getByCredentials(
                 memberFormDto.getEmail(),
-                memberFormDto.getPassword());
+                memberFormDto.getPassword(),
+                passwordEncoder);
 
         if(member != null) {
+            final String token = tokenProvider.create(member);
             // 토큰 생성
             final MemberFormDto responseUserDTO = MemberFormDto.builder()
                     .email(member.getEmail())
                     .id(member.getId())
+                    .token(token)
                     .build();
             return ResponseEntity.ok().body(responseUserDTO);
         } else {
             ResponseDto responseDto = ResponseDto.builder()
                     .error("Login failed.")
                     .build();
+
             return ResponseEntity
                     .badRequest()
                     .body(responseDto);

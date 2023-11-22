@@ -97,7 +97,10 @@ public class BasicController {
     }
 
     @PostMapping("/gender")
-    public ResponseEntity<String> testRequestBody(@RequestBody FilterDto dto) {
+    public ResponseEntity<String> testRequestBody(
+            @RequestBody FilterDto dto
+
+    ) {
         Map<String, String> requestHeaders = new HashMap<>();
         requestHeaders.put("X-Naver-Client-Id", dataclientId);
         requestHeaders.put("X-Naver-Client-Secret", dataclientSecret);
