@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @Table(name="member" ,uniqueConstraints = {@UniqueConstraint(columnNames = "email")})
@@ -29,6 +32,9 @@ public class Member {
 
     @Column(nullable = false)
     private String gender;
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Favorite> favorites = new ArrayList<>();
 
 
 }
