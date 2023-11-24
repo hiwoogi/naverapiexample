@@ -12,7 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @RequestMapping("/test3")
@@ -31,10 +37,14 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@Valid @RequestBody MemberFormDto memberFormDto, BindingResult result) {
+    public ResponseEntity<?> signUp(@Valid @RequestBody MemberFormDto memberFormDto, BindingResult result) {
         if (result.hasErrors()) {
-            // If there are validation errors, return a bad request response with error details
-            return ResponseEntity.badRequest().body("Validation failed: " + result.getAllErrors());
+            // If there are validation errors, format them and return as a JSON response
+            Map<String, List<String>> errors = new HashMap<>();
+            for (FieldError error : result.getFieldErrors()) {
+                errors.computeIfAbsent(error.getField(), k -> new ArrayList<>()).add(error.getDefaultMessage());
+            }
+            return ResponseEntity.badRequest().body(Map.of("errors", errors));
         }
 
         try {
