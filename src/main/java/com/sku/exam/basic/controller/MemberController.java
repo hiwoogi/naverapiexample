@@ -6,10 +6,12 @@ import com.sku.exam.basic.dto.ResponseDto;
 import com.sku.exam.basic.entity.Member;
 import com.sku.exam.basic.security.TokenProvider;
 import com.sku.exam.basic.service.MemberService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -29,7 +31,12 @@ public class MemberController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signUp(@RequestBody MemberFormDto memberFormDto) {
+    public ResponseEntity<String> signUp(@Valid @RequestBody MemberFormDto memberFormDto, BindingResult result) {
+        if (result.hasErrors()) {
+            // If there are validation errors, return a bad request response with error details
+            return ResponseEntity.badRequest().body("Validation failed: " + result.getAllErrors());
+        }
+
         try {
             // Convert MemberFormDto to Member entity
             Member member = new Member();
