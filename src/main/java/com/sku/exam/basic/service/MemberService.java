@@ -2,6 +2,7 @@ package com.sku.exam.basic.service;
 
 import com.sku.exam.basic.entity.Member;
 import com.sku.exam.basic.repository.MemberRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ public class MemberService {
     public Member saveMember(Member member){
         validateDuplicateMember(member);
         return memberRepository.save(member);
+
     }
 
     private void validateDuplicateMember(Member member){
@@ -38,5 +40,9 @@ public class MemberService {
         return null;
     }
 
+    public Member getMemberById(String memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException("Member not found with id: " + memberId));
+    }
 
 }

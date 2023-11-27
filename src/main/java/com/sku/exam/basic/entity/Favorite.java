@@ -1,5 +1,6 @@
 package com.sku.exam.basic.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,6 +26,7 @@ public class Favorite {
     // You can add fields related to the favorite here
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -32,6 +34,10 @@ public class Favorite {
     @Lob
     @Column(name = "filter_criteria", columnDefinition = "TEXT")
     private String filterCriteria;
+
+    @Lob
+    @Column(name = "click_filter_criteria", columnDefinition = "TEXT")
+    private String clickFilterCriteria;
 
 
 }

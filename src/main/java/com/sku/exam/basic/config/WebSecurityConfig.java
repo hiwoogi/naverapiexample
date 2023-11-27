@@ -43,6 +43,7 @@ public class WebSecurityConfig {
 //
                     .requestMatchers("/test3/**").permitAll()
                     .requestMatchers("/test2/**").permitAll()
+
                     .anyRequest().authenticated();  // 이외의 요청은 인증받아야함
         });
         // filter 등록.
