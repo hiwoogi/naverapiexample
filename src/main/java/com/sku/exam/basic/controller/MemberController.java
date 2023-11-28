@@ -60,7 +60,7 @@ public class MemberController {
 
             return ResponseEntity.ok("Signup successful. Member ID: " + savedMember.getId());
         } catch (IllegalStateException e) {
-            return ResponseEntity.badRequest().body("Failed to signup the website.");
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 

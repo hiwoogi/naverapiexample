@@ -10,11 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
+@Slf4j
 @RestController
 @RequestMapping("/favorites")
 public class FavController {
@@ -61,8 +63,14 @@ public class FavController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Favorite>> getAllFavorites() {
-        List<Favorite> favorites = favService.getAllFavorites();
+    public ResponseEntity<List<Favorite>> getAllFavorites(Authentication authentication) {
+        String memberId = authentication.getName();
+
+
+        // Use the member's email to fetch their favorites
+        List<Favorite> favorites = favService.getAllFavoritesForMember(memberId);
+
+
         return ResponseEntity.ok(favorites);
     }
 
