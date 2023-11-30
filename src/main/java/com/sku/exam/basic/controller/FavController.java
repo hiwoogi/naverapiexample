@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -35,13 +36,15 @@ public class FavController {
     @PostMapping
     public ResponseEntity<Favorite> createFavorite(@RequestBody FavoriteDto favoriteDto) {
         Member member = memberService.getMemberById(favoriteDto.getMember().getId());
-
-
+        LocalDateTime registrationTime = LocalDateTime.now();
 
         Favorite favorite = Favorite.builder()
                 .filterCriteria(convertToJsonString(favoriteDto.getFilterData())) // Convert FilterData to String using Gson
                 .clickFilterCriteria(convertToJsonString(favoriteDto.getClickFilterData()))
                 .member(member) // Set the member
+                .registrationTime(registrationTime) // Set the registration time
+                .title(favoriteDto.getTitle()) // Set the title
+                .contents(favoriteDto.getContents()) // Set the contents
                 .build();
 
         Favorite createdFavorite = favService.createFavorite(favorite);

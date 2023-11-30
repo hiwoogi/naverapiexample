@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -39,5 +40,15 @@ public class Favorite {
     @Column(name = "click_filter_criteria", columnDefinition = "TEXT")
     private String clickFilterCriteria;
 
+    @Column(name = "registration_time")
+    private LocalDateTime registrationTime;
+
+    @Column(name = "title")
+    private String title;
+
+    // New field: Contents of Favorites
+    @Lob
+    @Column(name = "contents", columnDefinition = "TEXT")
+    private String contents;
 
 }
