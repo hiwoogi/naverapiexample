@@ -27,11 +27,11 @@ public class FavService {
         return favRepository.save(favorite);
     }
 
-    public Favorite updateFavorite(String id, Favorite updatedFavorite) {
+    public Favorite updateFavorite(String id, String updatedContents) {
         Favorite existingFavorite = favRepository.findById(id).orElse(null);
         if (existingFavorite != null) {
             // Update fields as needed
-            existingFavorite.setFilterCriteria(updatedFavorite.getFilterCriteria());
+            existingFavorite.setContents(updatedContents);
             // Update other fields if needed
 
             return favRepository.save(existingFavorite);

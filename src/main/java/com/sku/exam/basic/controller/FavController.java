@@ -60,8 +60,9 @@ public class FavController {
 
 
     @PutMapping("/{id}")
-    public ResponseEntity<Favorite> updateFavorite(@PathVariable String id, @RequestBody Favorite favorite) {
-        Favorite updatedFavorite = favService.updateFavorite(id, favorite);
+    public ResponseEntity<Favorite> updateFavorite(@PathVariable String id, @RequestBody FavoriteDto favoriteDto) {
+
+        Favorite updatedFavorite = favService.updateFavorite(id, favoriteDto.getContents());
         return ResponseEntity.ok(updatedFavorite);
     }
 
